@@ -1,0 +1,38 @@
+language: groovy
+git:
+  submodules: false
+before_cache:
+- rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - ".gradle/"
+jdk:
+- oraclejdk8
+before_script:
+- rm -rf build/
+install: bash gradlew help
+script: bash gradlew :clean :assemble
+env:
+  global:
+  - GIT_NAME="Philipp Eschenbach"
+  - GIT_EMAIL="philipp@eschenbach.co"
+
+before_deploy:
+  # Set up git user name and tag this commit
+  - git config --local user.name "peh"
+  - git config --local user.email "philipp@eschenbach.co"
+  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+  - git tag $TRAVIS_TAG
+  - mv ./build/libs/bamboohr-slack-bot-*-all.jar ./build/libs/current.jar
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key:
+    secure: kSNZLc/moHOTBwwYpc9giSDoCv8i9sN4jzfSn3HBiOZNtN1swMCg8x72BzuhmL1TMhssqaxKR3YK3BOunfH5NXJVbMMIJRj0I4NHd0T/U0+fLaMoq6YAD6gV2UPfJl5pZERmH13j5P649MzqnGFWxYOsPAcakxa5yCsbwBSKgyPk1y0oBemN2xhHH0VWPRqCGz2J4CWte1D3gum3SXpKi6clvL1gtYdCjiWLZhSl0yXCX/eh1XzPEkat4MiGI/E9jk7rg4jDiRId2tl0e4RTTxZgjXE54TyaMyzbucR9OYNhy9UwvvPMw86NDSTKLwZlQkiKj3y3GFKPz+d/ln4eQTUYaPjOpSgFKl59nzhy36z4jVA7+doy4mJm2S/j4rVwpiWl4XCNHkxrwFPp+uj4IZILF3ec5jDsc/BOm2pxRclJWhczgGTCrYZwYVAoAGrWvSk6VZLtArtDOAqQY9RKkZBpqOSvTo9XfEQFlZdc5bqftJ3tUW4NEE+U2cUCNE4KJeZhYI+ODWMGU0mYGtUyoBa5meVuI+VlrrGvb85+SwKZoTsEdVjIfFd0kmfqmUwfnG8vubDFhjT88STabqhVffla2xiCQ1OydRoqcZQg4Eg77FJtKVNlJG4OBMmZB50aqNPGVOGyk9hWl9/LzoLG+RcrzNqUyb0IXBPCPtqoDYg=
+  file: "./build/libs/current.jar"
+  on:
+    repo: peh/bamboohr-slack-bot
+    tags: true

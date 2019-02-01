@@ -1,0 +1,53 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
+    id "com.github.johnrengelman.shadow" version "4.0.0"
+}
+
+version "0.1"
+group "bamboohr.slack.bot"
+
+apply plugin: "application"
+apply plugin: "groovy"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://jcenter.bintray.com" }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom 'io.micronaut:micronaut-bom:1.0.3'
+    }
+}
+
+dependencies {
+    compile "io.micronaut:micronaut-http-client"
+    compile "io.micronaut:micronaut-http-server-netty"
+    compile "io.micronaut:micronaut-runtime-groovy"
+    compile "io.micronaut:micronaut-validation"
+    compileOnly "io.micronaut:micronaut-inject-groovy"
+    runtime "ch.qos.logback:logback-classic:1.2.3"
+    testCompile "io.micronaut:micronaut-inject-groovy"
+    testCompile("org.spockframework:spock-core:1.2-groovy-2.4") {
+        exclude group: "org.codehaus.groovy", module: "groovy-all"
+    }
+    compile "redis.clients:jedis:2.9.0"
+
+    compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.5.1'
+    compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
+
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
+
+mainClassName = "bamboohr.slack.bot.Application"
+
+jar {
+    archiveName "current.jar"
+}

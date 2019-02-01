@@ -1,0 +1,8 @@
+micronaut:
+  application:
+    name: bamboohr-slack-bot
+  server:
+    port: 9000
+  http:
+    client:
+      read-timeout: 30s

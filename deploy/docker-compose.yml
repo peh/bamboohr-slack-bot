@@ -1,0 +1,17 @@
+version: "3"
+services:
+  redis:
+    image: redis
+  app:
+    image: peschenbach/bamboohr-slack-bot
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    environment:
+      - BAMBOOHR_COMPANY
+      - SLACK_TOKEN
+      - SLACK_TEAMID
+      - REDIS_HOST=redis
+    ports:
+      - 9000:9000
