@@ -3,6 +3,7 @@
 /out
 /deploy/current.jar
 /deploy/.env
+/deploy/caddy
 
 # Ignore Gradle GUI config
 gradle-app.setting

@@ -2,6 +2,14 @@ version: "3.7"
 services:
   redis:
     image: redis
+  web:
+    image: abiosoft/caddy
+    environment:
+      - ACME_AGREE=true
+      - BOT_DOMAIN
+    volumes:
+      - ./Caddyfile:/etc/Caddyfile
+      - ./caddy/:/root/.caddy
   app:
     image: peschenbach/bamboohr-slack-bot
     env_file:
