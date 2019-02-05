@@ -13,7 +13,7 @@ jdk:
 before_script:
 - rm -rf build/
 install: bash gradlew help
-script: bash gradlew :clean :assemble
+script: bash gradlew :clean :test :assemble
 env:
   global:
   - GIT_NAME="Philipp Eschenbach"

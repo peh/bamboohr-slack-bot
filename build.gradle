@@ -38,6 +38,7 @@ dependencies {
     compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
     compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
 
+    testCompile group: 'ai.grakn', name: 'redis-mock', version: '0.1.6'
 }
 
 shadowJar {
