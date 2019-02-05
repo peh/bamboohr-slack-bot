@@ -20,11 +20,6 @@ env:
   - GIT_EMAIL="philipp@eschenbach.co"
 
 before_deploy:
-  # Set up git user name and tag this commit
-  - git config --local user.name "peh"
-  - git config --local user.email "philipp@eschenbach.co"
-  - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
-  - git tag $TRAVIS_TAG
   - mv ./build/libs/bamboohr-slack-bot-*-all.jar ./build/libs/current.jar
 
 deploy:
