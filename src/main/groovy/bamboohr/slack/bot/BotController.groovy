@@ -21,7 +21,7 @@ import io.reactivex.Single
 
 import javax.inject.Inject
 
-@Controller("/slack")
+@Controller("/")
 @Slf4j
 @SuppressWarnings("unused")
 class BotController {
@@ -49,7 +49,7 @@ class BotController {
         return "OK"
     }
 
-    @Post(value = "/command", consumes = [MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON])
+    @Post(value = "/", consumes = [MediaType.APPLICATION_FORM_URLENCODED, MediaType.APPLICATION_JSON])
     Single<HttpResponse<String>> login(@Body RawSlackCommand cmd) {
         try {
             BotCommand command = BotCommandFactory.parse(cmd)

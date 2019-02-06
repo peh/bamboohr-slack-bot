@@ -35,7 +35,7 @@ class BotControllerSpec extends Specification {
 
     void "test index"() {
         given:
-        HttpResponse response = client.toBlocking().exchange("/slack")
+        HttpResponse response = client.toBlocking().exchange("/")
 
         expect:
         response.status == HttpStatus.OK
@@ -62,7 +62,7 @@ class BotControllerSpec extends Specification {
 
         when:
         HttpResponse response = client.toBlocking().exchange(
-                HttpRequest.POST("/slack/command", cmd)
+                HttpRequest.POST("/", cmd)
                         .headers([
                         "Content-Type": "application/json; charset=UTF-8",
                 ])
@@ -91,7 +91,7 @@ class BotControllerSpec extends Specification {
         ]
         when:
         HttpResponse response = client.toBlocking().exchange(
-                HttpRequest.POST("/slack/command", cmd)
+                HttpRequest.POST("/", cmd)
                         .headers([
                         "Content-Type": "application/json; charset=UTF-8",
                 ])
