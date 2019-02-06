@@ -9,10 +9,8 @@ A simple slack-bot that posts "Who's out" notifications.
 * a slack developer account
 * a slack app that supports bots and slack commands
 
-## Installation
+## Usage
 
-The easiest way is to use docker
-
-TBD
+See [the docker repo](https://github.com/peh/bamboohr-slack-bot-deploy) to get information how to deploy the app with docker.
 
 ## Usage
