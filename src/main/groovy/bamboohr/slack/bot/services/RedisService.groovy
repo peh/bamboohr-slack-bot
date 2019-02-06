@@ -21,17 +21,24 @@ class RedisService {
     @Value('${redis.port:6379}')
     int redisPort
 
-    JedisPool jedisPool
+    private JedisPool jedisPool
 
     @PostConstruct
     void init() {
         jedisPool = new JedisPool(redisHost, redisPort)
     }
 
-    def withRedis(Closure c) {
+    /**
+     * takes a Jedis resource from the pool and assigns it to the given Closure to execute successive commands
+     * @param callable
+     * @return
+     */
+    def withRedis(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = Jedis) Closure callable) {
         Jedis redis = jedisPool.resource
         try {
-            return c(redis)
+            callable.setDelegate(redis)
+            callable.setResolveStrategy(Closure.DELEGATE_FIRST)
+            return callable.call(redis)
         } catch (JedisConnectionException jce) {
             throw jce
         } catch (Exception e) {
@@ -44,20 +51,22 @@ class RedisService {
     }
 
     String get(String key) {
+        String result = null
         withRedis { Jedis jedis ->
-            jedis.get(key)
+            result = get(key)
         }
+        result
     }
 
     String set(String key, String value) {
+        String result = null
         withRedis { Jedis jedis ->
-            jedis.set(key, value)
+            result = set(key, value)
         }
+        result
     }
 
-    def methodMissing(String name, args) {
-        withRedis { Jedis jedis ->
-            jedis.invokeMethod(name, args)
-        }
+    Object methodMissing(String name, args) {
+        return jedisPool.resource.invokeMethod(name, args)
     }
 }

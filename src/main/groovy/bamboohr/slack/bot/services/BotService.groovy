@@ -55,6 +55,10 @@ class BotService {
         slackService.post(channel, message)
     }
 
+    /**
+     * Handles the given BotCommand
+     * @param cmd
+     */
     void handle(BotCommand cmd) {
         boolean success
         if (cmd instanceof LoginBotCommand) {

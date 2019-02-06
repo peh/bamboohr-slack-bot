@@ -33,6 +33,14 @@ class BambooService {
     @Inject
     UserDatabase userDatabase
 
+    /**
+     * Uses the BambooHR API to get a detailed list of employees and there TimeOff information.
+     * This is done in two steps by first getting the /whos_out endpoint to grab a list
+     * afterwards it uses the time_off API to grab a detailed list to also gather the "type" info.
+     * As calling the details API 20 times might take to long this is done in parallel
+     * @param apiKey
+     * @return
+     */
     List<EmployeeTimeOffInfo> getEmployeesWhoAreOutToday(String apiKey) {
         String url = "$basePath/time_off/whos_out?end=${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)}"
         def list = httpClient.retrieve(getRequest(url, apiKey), List).firstElement().blockingGet().collect { EmployeeTimeOffInfo.parse(it as Map) }.unique { it.employeeId }
@@ -49,10 +57,21 @@ class BambooService {
         list
     }
 
+    /**
+     * Uses the time_off API to return details about the given TimeOffRequest
+     * @param apiKey
+     * @param id
+     * @return
+     */
     Maybe<List> getTimeOffDetails(String apiKey, long id) {
         httpClient.retrieve(getRequest("$basePath/time_off/requests?id=$id", apiKey), List).firstElement()
     }
 
+    /**
+     * Validates the apiKey of the the given LoginBotCommand by simply sending a request to the BambooHR API and checking for exceptions
+     * @param cmd
+     * @return
+     */
     boolean login(LoginBotCommand cmd) {
         boolean valid = false
         try {
@@ -75,10 +94,21 @@ class BambooService {
         valid
     }
 
+    /**
+     * Builds a request with proper headers set for the given apikey
+     * @param url
+     * @param apiKey
+     * @return
+     */
     private static HttpRequest getRequest(String url, String apiKey) {
-        HttpRequest.GET(url).header("accept", "application/json").header("Authorization", "Basic ${"$apiKey:x".bytes.encodeBase64().toString()}")
+        HttpRequest.GET(url).headers(["accept": "application/json", "Authorization": "Basic ${"$apiKey:x".bytes.encodeBase64().toString()}"])
     }
 
+    /**
+     * removes the user assigned to the given LogoutBotCommand from the userDatabase
+     * @param cmd
+     * @return
+     */
     boolean logout(LogoutBotCommand cmd) {
         userDatabase.remove(cmd.user)
         true

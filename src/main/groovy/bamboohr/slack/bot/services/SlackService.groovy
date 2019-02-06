@@ -19,9 +19,6 @@ class SlackService {
     @Value('${slack.token}')
     String slackToken
 
-    @Value('${slack.teamid}')
-    String teamId
-
     @Client('https://slack.com')
     @Inject
     RxHttpClient client
@@ -36,11 +33,10 @@ class SlackService {
     @Inject
     BambooService bambooService
 
-    boolean post(Channel channel, Map message) {
+    void post(Channel channel, Map message) {
         message.channel = channel.id
         try {
-            def resp = client.toBlocking().retrieve(buildRequest("/api/chat.postMessage", message), Map.class)
-            true
+            client.toBlocking().retrieve(buildRequest("/api/chat.postMessage", message), Map.class)
         } catch (e) {
             log.error "Posting message to slack failed. Message: $message", e
         }
