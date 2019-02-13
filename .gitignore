@@ -4,7 +4,7 @@
 /deploy/current.jar
 /deploy/.env
 /deploy/caddy
-
+database.json
 # Ignore Gradle GUI config
 gradle-app.setting
 
