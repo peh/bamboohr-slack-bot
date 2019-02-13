@@ -69,7 +69,9 @@ class BotService {
             success = handleAddBotCommand(cmd)
         } else if (cmd instanceof LogoutBotCommand) {
             success = handleLogoutCommand(cmd)
-        } else {
+        } else if(cmd instanceof HelpBotCommand) {
+            success = true
+        }else {
             log.error "${cmd.class} cannot be handled"
             success = false
         }

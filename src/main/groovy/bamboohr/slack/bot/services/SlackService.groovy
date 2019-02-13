@@ -36,7 +36,10 @@ class SlackService {
     void post(Channel channel, Map message) {
         message.channel = channel.id
         try {
-            client.toBlocking().retrieve(buildRequest("/api/chat.postMessage", message), Map.class)
+            def result = client.toBlocking().retrieve(buildRequest("/api/chat.postMessage", message), Map.class)
+            if (!result.ok) {
+                log.error(result.error)
+            }
         } catch (e) {
             log.error "Posting message to slack failed. Message: $message", e
         }

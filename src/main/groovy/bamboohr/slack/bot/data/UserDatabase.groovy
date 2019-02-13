@@ -5,9 +5,14 @@ import bamboohr.slack.bot.model.User
 import javax.inject.Singleton
 
 @Singleton
-class UserDatabase implements Database<User> {
+class UserDatabase extends FileDatabase<User> {
 
     void save(User user) {
         save(user.id, user)
+    }
+
+    @Override
+    User newEntity() {
+        new User()
     }
 }

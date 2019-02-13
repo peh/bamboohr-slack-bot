@@ -1,6 +1,6 @@
 package bamboohr.slack.bot.model
 
-class Channel {
+class Channel implements RedisEntity {
 
     String id
 
@@ -8,4 +8,11 @@ class Channel {
      * the user who requested, needed to get data
      */
     String userId
+
+    @Override
+    Channel fromJSON(Map json) {
+        this.id = json.id
+        this.userId = json.userId
+        this
+    }
 }

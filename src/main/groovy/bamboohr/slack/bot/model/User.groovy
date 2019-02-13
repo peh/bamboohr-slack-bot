@@ -1,6 +1,6 @@
 package bamboohr.slack.bot.model
 
-class User {
+class User implements RedisEntity {
 
     /**
      * we blindly take the slack user id
@@ -16,4 +16,12 @@ class User {
      * Name in bamboo
      */
     String name
+
+    @Override
+    User fromJSON(Map json) {
+        this.id = json.id
+        this.apiKey = json.apiKey
+        this.name = json.name
+        this
+    }
 }

@@ -8,7 +8,6 @@ import bamboohr.slack.bot.model.slack.ParseCommandException
 import bamboohr.slack.bot.model.slack.RawSlackCommand
 import bamboohr.slack.bot.services.BambooService
 import bamboohr.slack.bot.services.BotService
-import bamboohr.slack.bot.services.RedisService
 import bamboohr.slack.bot.services.SlackService
 import groovy.util.logging.Slf4j
 import io.micronaut.http.HttpResponse
@@ -30,9 +29,6 @@ class BotController {
     BambooService bambooService
 
     @Inject
-    RedisService redisService
-
-    @Inject
     SlackService slackService
 
     @Inject
@@ -44,8 +40,17 @@ class BotController {
     @Inject
     BotService botService
 
+    @Inject
+    PostToSlackJob postToSlackJob
+
     @Get("/")
     String index() {
+        return "OK"
+    }
+
+    @Get("/test")
+    String test() {
+        postToSlackJob.process()
         return "OK"
     }
 

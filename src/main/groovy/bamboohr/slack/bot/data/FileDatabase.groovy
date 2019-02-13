@@ -1,49 +1,54 @@
 package bamboohr.slack.bot.data
 
 import bamboohr.slack.bot.model.RedisEntity
-import bamboohr.slack.bot.services.RedisService
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
+import io.micronaut.context.annotation.Value
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 import javax.annotation.PostConstruct
-import javax.inject.Inject
 import javax.inject.Singleton
 import java.util.concurrent.ConcurrentHashMap
 
 @Singleton
 @CompileStatic
-abstract class Database<T extends RedisEntity> {
+abstract class FileDatabase<T extends RedisEntity> {
 
     private static final Map<String, Map<?, T>> CACHE = new ConcurrentHashMap<>()
     private static final JsonSlurper JSON = new JsonSlurper()
-    private static final Logger LOG = LoggerFactory.getLogger(Database.simpleName)
+    private static final Logger LOG = LoggerFactory.getLogger(FileDatabase.simpleName)
 
-    @Inject
-    RedisService redisService
+    private static File DB_FILE
+
+    @Value('${db.file:./database.json}')
+    String databaseLocation
 
     @PostConstruct
     void init() {
-        String fromDB = redisService.get(dbKey)
+        if (!DB_FILE) {
+            DB_FILE = new File(databaseLocation)
+            if (!DB_FILE.exists()) {
+                DB_FILE.createNewFile()
+                DB_FILE.write('{}', 'UTF-8  ')
+            }
+        }
+        Map<String, Map> m = JSON.parse(DB_FILE, "UTF-8") as Map<String, Map>
         Map cache = new ConcurrentHashMap<?, T>()
-        if (fromDB) {
-            Map<String, Map> m = JSON.parseText(fromDB) as Map<String, Map>
-            m.each { String key, Map val ->
+        if (m.containsKey(dbKey)) {
+            Map<String, Map> dbData = m.get(dbKey) as Map<String, Map>
+            dbData.each { String key, Map val ->
                 try {
                     T t = newEntity()
                     cache.put(key, t.fromJSON(val))
-                    cache.values().each {
-                        LOG.info(it.class.simpleName)
-                    }
                 } catch (e) {
                     LOG.warn("invalid value in the ${dbKey} for '$key'", e)
                 }
             }
+            CACHE.put(dbKey, cache)
+            LOG.info "$dbKey initialized with ${cache.size()} items"
         }
-        CACHE.put(dbKey, cache)
-        LOG.info "$dbKey initialized with ${cache.size()} items"
     }
 
     private Map<?, T> getCache() {
@@ -55,17 +60,23 @@ abstract class Database<T extends RedisEntity> {
     }
 
     void persist() {
-        redisService.set(dbKey, JsonOutput.toJson(cache))
+        synchronized (CACHE) {
+            DB_FILE.write(JsonOutput.toJson(CACHE), "UTF-8")
+        }
     }
 
     void save(String key, def value) {
         cache.put(key, value)
-        persist()
+        Thread.start {
+            persist()
+        }
     }
 
     void remove(String key) {
         cache.remove(key)
-        persist()
+        Thread.start {
+            persist()
+        }
     }
 
     T get(String key) {
