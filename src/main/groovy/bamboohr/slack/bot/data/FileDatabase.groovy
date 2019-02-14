@@ -31,7 +31,7 @@ abstract class FileDatabase<T extends RedisEntity> {
             DB_FILE = new File(databaseLocation)
             if (!DB_FILE.exists()) {
                 DB_FILE.createNewFile()
-                DB_FILE.write('{}', 'UTF-8  ')
+                DB_FILE.write('{}', 'UTF-8')
             }
         }
         Map<String, Map> m = JSON.parse(DB_FILE, "UTF-8") as Map<String, Map>
@@ -59,7 +59,7 @@ abstract class FileDatabase<T extends RedisEntity> {
         new ArrayList<T>(cache.values())
     }
 
-    void persist() {
+    static void persist() {
         synchronized (CACHE) {
             DB_FILE.write(JsonOutput.toJson(CACHE), "UTF-8")
         }
@@ -86,7 +86,6 @@ abstract class FileDatabase<T extends RedisEntity> {
     String getDbKey() {
         this.class.simpleName
     }
-
 
     abstract T newEntity()
 }
