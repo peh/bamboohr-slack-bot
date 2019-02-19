@@ -65,24 +65,14 @@ class SlackService {
     }
 
     static List buildAttachment(List<EmployeeTimeOffInfo> infos) {
-        if (infos) {
-            [
-                    [
-                            color  : "#36a64f",
-                            pretext: "How's out today?",
-                            footer : "brought to you by the mighty bamboobot",
-                            fields : infos.collect { EmployeeTimeOffInfo i -> i.slackAttachment }
-                    ]
-            ]
-        } else {
-            [
-                    [
-                            pretext: "Nobody is out today. Yeah!",
-                            footer : "brought to you by the mighty bamboobot",
-                            fields : infos.collect { EmployeeTimeOffInfo i -> i.slackAttachment }
-                    ]
-            ]
-        }
+        [
+                [
+                        color  : "#36a64f",
+                        pretext: infos ? "Who's out today?" : "Nobody is out today. :oh-yeah:",
+                        footer : "brought to you by the mighty bamboobot",
+                        fields : infos*.slackAttachment
+                ]
+        ]
     }
 
 }
