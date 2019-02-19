@@ -32,8 +32,7 @@ class EmployeeTimeOffInfo {
         if (endString != startString) {
             sb.append(" - $endString")
         }
-        int diff = Days.daysBetween(start, end).days
-        diff = diff == 0 ? 1 : diff
+        int diff = Days.daysBetween(start, end).days + 1
         String diffString = diff > 1 ? "$diff days" : "$diff day"
 
         sb.append(" ($diffString - $typeString)")
