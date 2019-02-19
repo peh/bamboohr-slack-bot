@@ -3,7 +3,7 @@ plugins {
     id "com.github.johnrengelman.shadow" version "4.0.0"
 }
 
-version "1.0.0-beta5"
+version "1.0.0-beta6"
 group "bamboohr.slack.bot"
 
 apply plugin: "application"
