@@ -46,9 +46,9 @@ abstract class FileDatabase<T extends RedisEntity> {
                     LOG.warn("invalid value in the ${dbKey} for '$key'", e)
                 }
             }
-            CACHE.put(dbKey, cache)
-            LOG.info "$dbKey initialized with ${cache.size()} items"
         }
+        LOG.info "$dbKey initialized with ${cache.size()} items"
+        CACHE.put(dbKey, cache)
     }
 
     private Map<?, T> getCache() {
