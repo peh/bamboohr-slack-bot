@@ -1,6 +1,5 @@
 package bamboohr.slack.bot
 
-import ai.grakn.redismock.RedisServer
 import io.micronaut.context.ApplicationContext
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
@@ -20,18 +19,6 @@ class BotControllerSpec extends Specification {
     @Shared
     @AutoCleanup
     RxHttpClient client = embeddedServer.applicationContext.createBean(RxHttpClient, embeddedServer.getURL())
-
-    @Shared
-    RedisServer redisServer
-
-    void setup() {
-        redisServer = RedisServer.newRedisServer(6379)
-        redisServer.start()
-    }
-
-    void cleanup() {
-        redisServer.stop()
-    }
 
     void "test index"() {
         given:

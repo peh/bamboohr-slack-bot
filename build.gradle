@@ -32,13 +32,10 @@ dependencies {
     testCompile("org.spockframework:spock-core:1.2-groovy-2.4") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    compile "redis.clients:jedis:2.9.0"
 
     compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.5.1'
     compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
     compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
-
-    testCompile group: 'ai.grakn', name: 'redis-mock', version: '0.1.6'
 }
 
 shadowJar {
