@@ -14,10 +14,9 @@ class PostToSlackJob {
     @Inject
     BotService botService
 
-    @Scheduled(cron = "0 0 9 ? * MON,TUE,WED,THU,FRI")
+    @Scheduled(cron = '${bamboobot.job.cron}')
     void process() {
         log.info("processing")
         botService.post()
     }
-
 }

@@ -3,6 +3,13 @@ micronaut:
     name: bamboohr-slack-bot
   server:
     port: 9000
+  executors:
+    scheduled:
+      type: scheduled
+      core-pool-size: 2
   http:
     client:
       read-timeout: 30s
+bamboobot:
+  job:
+    cron: "0 10 9 ? * MON,TUE,WED,THU,FRI"
