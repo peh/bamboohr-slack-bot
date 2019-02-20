@@ -1,6 +1,8 @@
 plugins {
     id "io.spring.dependency-management" version "1.0.6.RELEASE"
-    id "com.github.johnrengelman.shadow" version "4.0.0"
+    id "com.github.johnrengelman.shadow" version "4.0.2"
+    id "application"
+    id "groovy"
 }
 
 version "1.0.0-beta7"
@@ -17,8 +19,13 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom 'io.micronaut:micronaut-bom:1.0.3'
+        mavenBom 'io.micronaut:micronaut-bom:1.1.0.M1'
     }
+}
+
+configurations {
+    // for dependencies that are needed for development only
+    developmentOnly
 }
 
 dependencies {
@@ -27,11 +34,16 @@ dependencies {
     compile "io.micronaut:micronaut-runtime-groovy"
     compile "io.micronaut:micronaut-validation"
     compileOnly "io.micronaut:micronaut-inject-groovy"
+    developmentOnly "io.micronaut:micronaut-runtime-osx"
     runtime "ch.qos.logback:logback-classic:1.2.3"
-    testCompile "io.micronaut:micronaut-inject-groovy"
-    testCompile("org.spockframework:spock-core:1.2-groovy-2.4") {
+    testCompile("org.spockframework:spock-core") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
+    testCompile "io.micronaut:micronaut-inject-groovy"
+    testCompile "io.micronaut.test:micronaut-test-spock:1.0.1"
+
+    developmentOnly "net.java.dev.jna:jna"
+    developmentOnly "io.methvin:directory-watcher"
 
     compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.5.1'
     compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
@@ -42,7 +54,13 @@ shadowJar {
     mergeServiceFiles()
 }
 
+run.classpath += configurations.developmentOnly
+test.classpath += configurations.developmentOnly
 run.jvmArgs('-noverify', '-XX:TieredStopAtLevel=1')
+
+tasks.withType(GroovyCompile) {
+    groovyOptions.forkOptions.jvmArgs.add('-Dgroovy.parameters=true')
+}
 
 mainClassName = "bamboohr.slack.bot.Application"
 

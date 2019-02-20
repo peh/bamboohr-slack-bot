@@ -10,6 +10,10 @@ micronaut:
   http:
     client:
       read-timeout: 30s
+  io:
+    watch:
+      paths: src/main
+      restart: true
 bamboobot:
   job:
     cron: "0 10 9 ? * MON,TUE,WED,THU,FRI"
