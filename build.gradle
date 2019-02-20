@@ -5,11 +5,8 @@ plugins {
     id "groovy"
 }
 
-version "1.0.0-beta7"
+version "1.0.0-beta8"
 group "bamboohr.slack.bot"
-
-apply plugin: "application"
-apply plugin: "groovy"
 
 repositories {
     mavenLocal()
@@ -29,13 +26,13 @@ configurations {
 }
 
 dependencies {
-    compile "io.micronaut:micronaut-http-client"
-    compile "io.micronaut:micronaut-http-server-netty"
     compile "io.micronaut:micronaut-runtime-groovy"
     compile "io.micronaut:micronaut-validation"
+    compile "io.micronaut:micronaut-http-client"
+    compile "io.micronaut:micronaut-http-server-netty"
     compileOnly "io.micronaut:micronaut-inject-groovy"
-    developmentOnly "io.micronaut:micronaut-runtime-osx"
     runtime "ch.qos.logback:logback-classic:1.2.3"
+
     testCompile("org.spockframework:spock-core") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
@@ -44,6 +41,7 @@ dependencies {
 
     developmentOnly "net.java.dev.jna:jna"
     developmentOnly "io.methvin:directory-watcher"
+    developmentOnly "io.micronaut:micronaut-runtime-osx"
 
     compile group: 'org.codehaus.groovy', name: 'groovy-json', version: '2.5.1'
     compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
@@ -63,7 +61,3 @@ tasks.withType(GroovyCompile) {
 }
 
 mainClassName = "bamboohr.slack.bot.Application"
-
-jar {
-    archiveName "current.jar"
-}
