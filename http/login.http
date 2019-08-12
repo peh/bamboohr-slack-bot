@@ -1,0 +1,5 @@
+GET https://api.bamboohr.com/api/gateway.php/uberall/v1/time_off/whos_out
+Accept: application/json
+Authorization: Basic NzY0MDEwMWFkYmY1YjUxOTNmYTQyM2FkYjIyNzk1ZGI3ODU4ZTU0Nzp4Cg==
+#Authorization: Basic OGViZjc0ZTRkNDJmODM5YzY1YTdiNTY5MmUwZjdhOGMxZmZjMmNlNTp4Cg==
+###
