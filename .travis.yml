@@ -9,7 +9,7 @@ cache:
   - "$HOME/.gradle/wrapper/"
   - ".gradle/"
 jdk:
-- oraclejdk8
+- oraclejdk11
 before_script:
 - rm -rf build/
 install: bash gradlew help
