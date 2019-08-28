@@ -44,7 +44,7 @@ class BambooService {
      * @return
      */
     List<EmployeeTimeOffInfo> getEmployeesWhoAreOutToday(String apiKey) {
-        String url = "$basePath/time_off/whos_out?start=${LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ISO_DATE)}&end=${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)}"
+        String url = "$basePath/time_off/whos_out?start=${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)}&end=${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)}"
         def list
         try {
             list = httpClient.retrieve(getRequest(url, apiKey), List).firstElement().blockingGet().collect { EmployeeTimeOffInfo.parse(it as Map) }.unique { it.employeeId }
