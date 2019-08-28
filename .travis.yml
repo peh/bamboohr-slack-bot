@@ -20,7 +20,7 @@ env:
   - GIT_EMAIL="philipp@eschenbach.co"
 
 before_deploy:
-  - mv ./build/libs/bamboohr-slack-bot-*-all.jar ./build/libs/current.jar
+  - mv ./build/libs/bamboobot-*-all.jar ./build/libs/current.jar
 
 deploy:
   provider: releases
