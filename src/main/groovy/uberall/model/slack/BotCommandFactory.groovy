@@ -22,7 +22,7 @@ class BotCommandFactory {
     }
 
     static init() {
-        Reflections reflections = new Reflections("bamboohr.slack.bot.model.slack")
+        Reflections reflections = new Reflections("uberall.model.slack")
         reflections.getSubTypesOf(BotCommand.class).each { cmd ->
             BotCommand c = cmd.newInstance()
             COMMANDS.add(c)
