@@ -6,7 +6,7 @@ plugins {
     id "application"
 }
 
-version "1.0.0-beta9"
+version "1.0.1"
 group "bamboohr.slack.bot"
 
 repositories {
