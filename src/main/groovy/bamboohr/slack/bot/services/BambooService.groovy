@@ -44,18 +44,25 @@ class BambooService {
      * @return
      */
     List<EmployeeTimeOffInfo> getEmployeesWhoAreOutToday(String apiKey) {
-        String url = "$basePath/time_off/whos_out?end=${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)}"
-        def list = httpClient.retrieve(getRequest(url, apiKey), List).firstElement().blockingGet().collect { EmployeeTimeOffInfo.parse(it as Map) }.unique { it.employeeId }
+        String url = "$basePath/time_off/whos_out?start=${LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ISO_DATE)}&end=${LocalDateTime.now().format(DateTimeFormatter.ISO_DATE)}"
+        def list
+        try {
+            list = httpClient.retrieve(getRequest(url, apiKey), List).firstElement().blockingGet().collect { EmployeeTimeOffInfo.parse(it as Map) }.unique { it.employeeId }
 
-        Flowable.fromIterable(list).flatMapMaybe({ basicInfo ->
-            getTimeOffDetails(apiKey, basicInfo.id)?.doOnSuccess({ List l ->
-                if (l.size()) {
-                    def detailedInfo = l.first()
-                    basicInfo.type = EmployeeTimeOffInfo.Type.fromBambooType(detailedInfo.type.name)
-                    basicInfo.typeString = detailedInfo.type.name
-                }
-            })
-        }, false, 10).toList().blockingGet()
+            Flowable.fromIterable(list).flatMapMaybe({ basicInfo ->
+                getTimeOffDetails(apiKey, basicInfo.id)?.doOnSuccess({ List l ->
+                    if (l.size()) {
+                        def detailedInfo = l.first()
+                        basicInfo.type = EmployeeTimeOffInfo.Type.fromBambooType(detailedInfo.type.name)
+                        basicInfo.typeString = detailedInfo.type.name
+                    }
+                })
+            }, false, 10).toList().blockingGet()
+
+        } catch (HttpClientResponseException e) {
+            e.response.body()
+            true
+        }
         list
     }
 
@@ -67,7 +74,7 @@ class BambooService {
      */
     Maybe<List> getTimeOffDetails(String apiKey, long id) {
         try {
-            return httpClient.retrieve(getRequest("$basePath/time_off/requests?id=$id", apiKey), List).firstElement()
+            return httpClient.retrieve(getRequest("$basePath/time_off/requests?start=${LocalDateTime.now().minusDays(30).format(DateTimeFormatter.ISO_DATE)}&end=${LocalDateTime.now().plusDays(30).format(DateTimeFormatter.ISO_DATE)}&id=$id", apiKey), List).firstElement()
         } catch (HttpClientResponseException e) {
             if(e.response.status == HttpStatus.UNAUTHORIZED) {
                 // nothing
