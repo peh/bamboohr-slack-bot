@@ -1,5 +1,5 @@
 profile: service
-defaultPackage: bamboohr.slack.bot
+defaultPackage: uberall
 ---
 testFramework: spock
 sourceLanguage: groovy

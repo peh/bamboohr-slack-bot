@@ -1,6 +1,6 @@
 micronaut:
   application:
-    name: bamboohr-slack-bot
+    name: bamboobot
   server:
     port: 9000
   executors:

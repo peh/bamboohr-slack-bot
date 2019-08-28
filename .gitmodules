@@ -1,3 +1,0 @@
-[submodule "docker"]
-	path = docker
-	url = git@github.com:peh/bamboohr-slack-bot-deploy.git
